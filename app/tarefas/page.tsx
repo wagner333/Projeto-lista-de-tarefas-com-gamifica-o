@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import {
@@ -26,11 +26,7 @@ export default function TasksPage() {
     is_daily: false,
   });
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -53,7 +49,11 @@ export default function TasksPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
   const completeTask = async (taskId: number) => {
     const loadingToast = toast.loading("Completando tarefa...");
@@ -137,8 +137,10 @@ export default function TasksPage() {
         // Error handling
         if (data.errors) {
           // Validation errors
-          Object.values(data.errors).forEach((error: any) => {
-            toast.error(error[0]);
+          Object.values(data.errors).forEach((error) => {
+            if (Array.isArray(error)) {
+              toast.error(error[0]);
+            }
           });
         } else {
           toast.error(data.message || "Erro ao criar tarefa");
@@ -181,27 +183,6 @@ export default function TasksPage() {
         id: loadingToast,
       });
     }
-  };
-
-  const getDifficultyColor = (difficulty: number) => {
-    const colors = {
-      1: "text-green-400",
-      2: "text-blue-400",
-      3: "text-yellow-400",
-      4: "text-orange-400",
-      5: "text-red-400",
-    };
-    return colors[difficulty as keyof typeof colors];
-  };
-
-  const getStatusColor = (status: Task["status"]) => {
-    const colors = {
-      pending: "bg-yellow-500",
-      in_progress: "bg-blue-500",
-      completed: "bg-green-500",
-      failed: "bg-red-500",
-    };
-    return colors[status];
   };
 
   // New grouping function
