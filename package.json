@@ -41,5 +41,14 @@
     "eslint-config-next": "15.2.1-canary.4",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next",
+      "config": {
+        "installCommand": "npm install --legacy-peer-deps"
+      }
+    }
+  ]
 }
