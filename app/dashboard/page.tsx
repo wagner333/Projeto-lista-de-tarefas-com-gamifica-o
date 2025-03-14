@@ -98,6 +98,13 @@ export default function Dashboard() {
       count: userStats?.schedules.active || 0,
       minutes: userStats?.schedules.totalMinutes || 0,
     },
+    {
+      title: "pomodoro",
+      icon: <ClockIcon className="h-5 w-5" />,
+      href: "/pomodoro",
+      count: userStats?.schedules.active || 0,
+      minutes: userStats?.schedules.totalMinutes || 0,
+    },
   ];
 
   const fetchUserData = useCallback(async () => {
